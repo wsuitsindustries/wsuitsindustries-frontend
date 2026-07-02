@@ -1,0 +1,38 @@
+[
+  {
+    "id": "solar-drones",
+    "title": "How Solar-Powered Drones Are Reshaping African Logistics",
+    "excerpt": "Our AfriDrone fleet just completed 10,000 deliveries across five countries — here's what we learned about building for the continent.",
+    "author": "Kwame Osei",
+    "date": "2026-06-15",
+    "image": "https://images.unsplash.com/photo-1508614589041-895f889bac9d?w=800&q=80",
+    "readTime": "8 min read"
+  },
+  {
+    "id": "ai-agriculture",
+    "title": "Precision Agriculture: Feeding Africa with AI",
+    "excerpt": "AgriBot's field trials show a 40% increase in yield for smallholder farmers. We break down the technology behind the numbers.",
+    "author": "Elijah Mwangi",
+    "date": "2026-05-28",
+    "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
+    "readTime": "12 min read"
+  },
+  {
+    "id": "smart-grids",
+    "title": "The Blueprint for a Continent-Spanning Smart Grid",
+    "excerpt": "Imagine an Africa where every home has reliable power. SmartGrid Africa's decentralized model makes it possible.",
+    "author": "Amina Diallo",
+    "date": "2026-04-10",
+    "image": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80",
+    "readTime": "10 min read"
+  },
+  {
+    "id": "edtech",
+    "title": "EduConnect: Building an Offline-First Classroom for Millions",
+    "excerpt": "How we designed a learning platform that works on $30 smartphones, without internet, in 50+ languages.",
+    "author": "Zara Kibwe",
+    "date": "2026-03-22",
+    "image": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80",
+    "readTime": "6 min read"
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "intro-ai",
+    "title": "Introduction to Artificial Intelligence",
+    "description": "A beginner-friendly course covering neural networks, computer vision, and natural language processing with real-world African use cases.",
+    "level": "Beginner",
+    "duration": "4 hours",
+    "lessons": 12,
+    "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80"
+  },
+  {
+    "id": "solar-engineering",
+    "title": "Solar Engineering for African Climates",
+    "description": "Design and deploy solar systems optimized for equatorial, arid, and tropical environments across the continent.",
+    "level": "Intermediate",
+    "duration": "6 hours",
+    "lessons": 18,
+    "image": "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80"
+  },
+  {
+    "id": "robotics-fundamentals",
+    "title": "Robotics Fundamentals",
+    "description": "Build and program autonomous robots using affordable hardware. Covers kinematics, sensor fusion, and ROS2.",
+    "level": "Intermediate",
+    "duration": "8 hours",
+    "lessons": 24,
+    "image": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80"
+  },
+  {
+    "id": "smart-grid-design",
+    "title": "Smart Grid Design & Management",
+    "description": "Learn to architect decentralized micro-grids, implement load balancing algorithms, and integrate renewable sources.",
+    "level": "Advanced",
+    "duration": "10 hours",
+    "lessons": 30,
+    "image": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80"
+  },
+  {
+    "id": "drone-tech",
+    "title": "Drone Technology & Aerial Robotics",
+    "description": "From flight dynamics to autonomous navigation — master the full stack of modern drone development.",
+    "level": "Advanced",
+    "duration": "12 hours",
+    "lessons": 36,
+    "image": "https://images.unsplash.com/photo-1506947411483-0070ffb292a4?w=800&q=80"
+  },
+  {
+    "id": "ai-healthcare",
+    "title": "AI in Healthcare for Emerging Markets",
+    "description": "Build diagnostic AI models that work with limited data, intermittent connectivity, and diverse patient populations.",
+    "level": "Advanced",
+    "duration": "8 hours",
+    "lessons": 20,
+    "image": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80"
+  }
+]

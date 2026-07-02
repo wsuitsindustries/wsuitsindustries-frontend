@@ -1,0 +1,44 @@
+[
+  {
+    "id": "kwame",
+    "name": "Kwame Osei",
+    "role": "CEO & Co-Founder",
+    "bio": "Former SpaceX engineer turned Afrofuturist. Kwame leads the company's vision of a technologically sovereign Africa.",
+    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80"
+  },
+  {
+    "id": "amina",
+    "name": "Amina Diallo",
+    "role": "CTO & Co-Founder",
+    "bio": "Deep learning researcher from MIT Media Lab. Amina architects the AI systems powering every WSUITS product.",
+    "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80"
+  },
+  {
+    "id": "chidi",
+    "name": "Chidi Okonkwo",
+    "role": "VP of Engineering",
+    "bio": "Scaled infrastructure at Flutterwave and Andela. Chidi ensures our products ship fast and run reliably.",
+    "image": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80"
+  },
+  {
+    "id": "zara",
+    "name": "Zara Kibwe",
+    "role": "Head of Product Design",
+    "bio": "Former Apple designer who believes the best technology is invisible. Zara crafts intuitive experiences for African users.",
+    "image": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80"
+  },
+  {
+    "id": "elijah",
+    "name": "Elijah Mwangi",
+    "role": "Head of Robotics",
+    "bio": "Roboticist who built Africa's first open-source farm robot. Elijah leads the hardware engineering behind AgriBot and AfriDrone.",
+    "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80"
+  },
+  {
+    "id": "nyambura",
+    "name": "Nyambura Kimani",
+    "role": "VP of Strategic Partnerships",
+    "bio": "Former UN advisor on technology policy. Nyambura secures government and institutional partnerships across the continent.",
+    "image": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80"
+  }
+]
