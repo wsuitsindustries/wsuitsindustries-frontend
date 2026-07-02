@@ -56,7 +56,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="max-md:relative max-md:flex-1 max-md:w-full md:absolute md:inset-0">
+      <div className="max-md:absolute max-md:bottom-0 max-md:left-0 max-md:w-full max-md:h-1/2 md:absolute md:inset-0">
         <FlockBackground />
       </div>
 
