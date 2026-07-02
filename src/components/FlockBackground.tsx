@@ -56,7 +56,7 @@ interface ShapeMeta {
   scaleStart: number
 }
 
-const COUNT = 900
+const COUNT = 400
 const SPRING = 0.06
 const DAMPING = 0.88
 const SHAPE_HOLD_MS = 5500     // how long a shape rests before morphing
@@ -598,7 +598,7 @@ export default function FlockBackground() {
             vx: 0,
             vy: 0,
             vz: 0,
-            size: rand(rightHalf ? 4 : 3, rightHalf ? 7.5 : 6),
+            size: rand(2.5, 5.0),
             hue: p.h + rand(-6, 6),
             sat: p.s + rand(-6, 6),
             light: p.l + rand(-8, 8),
@@ -717,24 +717,14 @@ export default function FlockBackground() {
       c.clearRect(0, 0, w, h)
 
       for (const p of particles) {
-        const zDepth = 0.35 + 0.65 * p.z
-        const twinkle = 0.7 + 0.3 * Math.sin(p.twinklePhase + frame * p.twinkleSpeed)
-        const alpha = (0.5 + 0.5 * twinkle) * zDepth
-        const drawSize = p.size * zDepth
-
-        const highlight = Math.min(p.light + 20 * p.z, 92)
-        const shadow = Math.max(p.light - 10 * (1 - p.z), 35)
-        const grad = c.createRadialGradient(
-          p.x - drawSize * 0.25, p.y - drawSize * 0.25, 0,
-          p.x, p.y, drawSize
-        )
-        grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${highlight}%, ${alpha})`)
-        grad.addColorStop(0.6, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha * 0.85})`)
-        grad.addColorStop(1, `hsla(${p.hue}, ${p.sat - 5}%, ${shadow}%, ${alpha * 0.55})`)
+        const zDepth = 0.5 + 0.5 * p.z
+        const twinkle = 0.6 + 0.4 * Math.sin(p.twinklePhase + frame * p.twinkleSpeed)
+        const alpha = (0.55 + 0.45 * twinkle) * zDepth
+        const color = `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha})`
 
         c.beginPath()
-        c.arc(p.x, p.y, drawSize, 0, Math.PI * 2)
-        c.fillStyle = grad
+        c.arc(p.x, p.y, p.size * zDepth, 0, Math.PI * 2)
+        c.fillStyle = color
         c.fill()
       }
     }

@@ -128,6 +128,7 @@ export default function FooterBackground() {
     let particles: Particle[] = []
     let animId = 0
     let frame = 0
+    let isMobile = window.innerWidth < 768
 
     function init() {
       const pts = generateShapePoints(COUNT, w, h)
@@ -153,6 +154,7 @@ export default function FooterBackground() {
     function resize() {
       w = window.innerWidth
       h = window.innerHeight
+      isMobile = w < 768
       dpr = Math.min(window.devicePixelRatio || 1, 2)
       canvas!.width = w * dpr
       canvas!.height = h * dpr
@@ -193,10 +195,10 @@ export default function FooterBackground() {
     }
 
     window.addEventListener("resize", resize)
-    window.addEventListener("mousemove", onMove)
-    window.addEventListener("mouseleave", onLeave)
-    window.addEventListener("touchmove", onMove, { passive: true })
-    window.addEventListener("touchend", onLeave)
+    if (!isMobile) {
+      window.addEventListener("mousemove", onMove)
+      window.addEventListener("mouseleave", onLeave)
+    }
 
     function tick() {
       animId = requestAnimationFrame(tick)
@@ -210,13 +212,15 @@ export default function FooterBackground() {
         p.vx += dx * SPRING
         p.vy += dy * SPRING
 
-        const dxc = p.x - cx
-        const dyc = p.y - cy
-        const dc = Math.sqrt(dxc * dxc + dyc * dyc)
-        if (dc < FLEE_RADIUS && dc > 0.1) {
-          const strength = (1 - dc / FLEE_RADIUS) * FLEE_FORCE
-          p.vx += (dxc / dc) * strength
-          p.vy += (dyc / dc) * strength
+        if (!isMobile) {
+          const dxc = p.x - cx
+          const dyc = p.y - cy
+          const dc = Math.sqrt(dxc * dxc + dyc * dyc)
+          if (dc < FLEE_RADIUS && dc > 0.1) {
+            const strength = (1 - dc / FLEE_RADIUS) * FLEE_FORCE
+            p.vx += (dxc / dc) * strength
+            p.vy += (dyc / dc) * strength
+          }
         }
 
         p.vx *= DAMPING
@@ -247,8 +251,6 @@ export default function FooterBackground() {
       window.removeEventListener("resize", resize)
       window.removeEventListener("mousemove", onMove)
       window.removeEventListener("mouseleave", onLeave)
-      window.removeEventListener("touchmove", onMove)
-      window.removeEventListener("touchend", onLeave)
     }
   }, [])
 
