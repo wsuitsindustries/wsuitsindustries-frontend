@@ -20,17 +20,20 @@ import { useEffect, useRef } from "react"
 interface Particle {
   x: number
   y: number
+  z: number
   targetX: number
   targetY: number
+  targetZ: number
   vx: number
   vy: number
+  vz: number
   size: number
   hue: number
   sat: number
   light: number
   twinkleSpeed: number
   twinklePhase: number
-  delay: number // per-particle stagger so arrivals cascade, not snap
+  delay: number
 }
 
 const FLEE_RADIUS = 140
@@ -41,10 +44,16 @@ interface Point {
   y: number
 }
 
+interface Point3D {
+  x: number
+  y: number
+  z: number
+}
+
 interface ShapeMeta {
-  entryDir: Point   // unit-ish direction particles fly in FROM
-  tiltDeg: number    // rotation applied during flight, eases to 0
-  scaleStart: number // formation scale at the very start of flight
+  entryDir: Point
+  tiltDeg: number
+  scaleStart: number
 }
 
 const COUNT = 900
@@ -92,6 +101,141 @@ function roundRect(
 }
 
 // --- shape drawers — each paints a solid silhouette onto a white SWxSH buffer ---
+
+function drawAfrica(ctx: CanvasRenderingContext2D, SW: number, SH: number) {
+  const cx = SW / 2
+  const cy = SH / 2
+  const s = Math.min(SW, SH) * 0.38
+
+  ctx.fillStyle = "#000"
+  ctx.beginPath()
+
+  // Northwest (Morocco area)
+  ctx.moveTo(cx - s * 0.3, cy - s * 0.7)
+  ctx.quadraticCurveTo(cx, cy - s * 0.8, cx + s * 0.4, cy - s * 0.65)
+  // Egypt / Sinai
+  ctx.quadraticCurveTo(cx + s * 0.55, cy - s * 0.55, cx + s * 0.55, cy - s * 0.45)
+  // Horn of Africa
+  ctx.quadraticCurveTo(cx + s * 0.85, cy - s * 0.35, cx + s * 0.9, cy - s * 0.1)
+  ctx.quadraticCurveTo(cx + s * 0.95, cy, cx + s * 0.85, cy + s * 0.1)
+  // East coast down
+  ctx.quadraticCurveTo(cx + s * 0.75, cy + s * 0.3, cx + s * 0.65, cy + s * 0.5)
+  // South Africa
+  ctx.quadraticCurveTo(cx + s * 0.5, cy + s * 0.7, cx + s * 0.2, cy + s * 0.75)
+  ctx.quadraticCurveTo(cx, cy + s * 0.8, cx - s * 0.15, cy + s * 0.72)
+  // West coast up
+  ctx.quadraticCurveTo(cx - s * 0.35, cy + s * 0.6, cx - s * 0.45, cy + s * 0.4)
+  // West Africa bulge
+  ctx.quadraticCurveTo(cx - s * 0.6, cy + s * 0.25, cx - s * 0.55, cy + s * 0.1)
+  ctx.quadraticCurveTo(cx - s * 0.5, cy - s * 0.1, cx - s * 0.5, cy - s * 0.25)
+  ctx.quadraticCurveTo(cx - s * 0.45, cy - s * 0.45, cx - s * 0.3, cy - s * 0.6)
+  ctx.closePath()
+  ctx.fill()
+
+  // Madagascar
+  ctx.beginPath()
+  ctx.ellipse(cx + s * 0.55, cy + s * 0.45, s * 0.06, s * 0.2, 0.1, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Rising sun behind Africa
+  ctx.fillStyle = "#fff"
+  ctx.beginPath()
+  ctx.arc(cx - s * 0.05, cy + s * 0.15, s * 0.18, 0, Math.PI * 2)
+  ctx.fill()
+}
+
+function drawGear(ctx: CanvasRenderingContext2D, SW: number, SH: number) {
+  const cx = SW / 2
+  const cy = SH / 2
+  const or = Math.min(SW, SH) * 0.35
+  const ir = or * 0.76
+  const teeth = 10
+
+  ctx.fillStyle = "#000"
+  ctx.beginPath()
+  for (let i = 0; i < teeth * 2; i++) {
+    const a = (i * Math.PI) / teeth - Math.PI / 2
+    const r = i % 2 === 0 ? or : ir
+    const x = cx + r * Math.cos(a)
+    const y = cy + r * Math.sin(a)
+    if (i === 0) ctx.moveTo(x, y)
+    else ctx.lineTo(x, y)
+  }
+  ctx.closePath()
+  ctx.fill()
+
+  // Center hole
+  ctx.fillStyle = "#fff"
+  ctx.beginPath()
+  ctx.arc(cx, cy, or * 0.2, 0, Math.PI * 2)
+  ctx.fill()
+}
+
+function drawLightbulb(ctx: CanvasRenderingContext2D, SW: number, SH: number) {
+  const cx = SW / 2
+  const cy = SH / 2
+  const r = Math.min(SW, SH) * 0.28
+
+  ctx.fillStyle = "#000"
+  ctx.beginPath()
+  ctx.arc(cx, cy - r * 0.1, r, Math.PI, 0, true)
+  ctx.lineTo(cx + r * 0.45, cy + r * 0.5)
+  ctx.lineTo(cx + r * 0.3, cy + r * 0.9)
+  ctx.lineTo(cx - r * 0.3, cy + r * 0.9)
+  ctx.lineTo(cx - r * 0.45, cy + r * 0.5)
+  ctx.closePath()
+  ctx.fill()
+}
+
+function drawNetwork(ctx: CanvasRenderingContext2D, SW: number, SH: number) {
+  const cx = SW / 2
+  const cy = SH / 2
+  const s = Math.min(SW, SH) * 0.3
+  const step = s * 0.35
+
+  ctx.strokeStyle = "#000"
+  ctx.lineWidth = SH * 0.035
+  ctx.lineCap = "round"
+
+  // Grid lines
+  for (let x = -1; x <= 1; x++) {
+    for (let y = -1; y <= 1; y++) {
+      ctx.beginPath()
+      ctx.moveTo(cx - s, cy + y * step)
+      ctx.lineTo(cx + s, cy + y * step)
+      ctx.stroke()
+
+      ctx.beginPath()
+      ctx.moveTo(cx + x * step, cy - s)
+      ctx.lineTo(cx + x * step, cy + s)
+      ctx.stroke()
+    }
+  }
+
+  // Center connecting lines (diagonals)
+  for (const dx of [-1, 1]) {
+    for (const dy of [-1, 1]) {
+      ctx.beginPath()
+      ctx.moveTo(cx, cy)
+      ctx.lineTo(cx + dx * s, cy + dy * s)
+      ctx.stroke()
+    }
+  }
+
+  // Nodes at intersections
+  ctx.fillStyle = "#000"
+  for (let x = -1; x <= 1; x++) {
+    for (let y = -1; y <= 1; y++) {
+      ctx.beginPath()
+      ctx.arc(cx + x * step, cy + y * step, SH * 0.028, 0, Math.PI * 2)
+      ctx.fill()
+    }
+  }
+  // Center node bigger
+  ctx.beginPath()
+  ctx.arc(cx, cy, SH * 0.04, 0, Math.PI * 2)
+  ctx.fill()
+}
 
 function drawBraces(ctx: CanvasRenderingContext2D, SW: number, SH: number) {
   ctx.fillStyle = "#000"
@@ -310,18 +454,26 @@ const SHAPES: ((ctx: CanvasRenderingContext2D, SW: number, SH: number) => void)[
   drawRobot,
   drawGlobe,
   drawChip,
+  drawAfrica,
+  drawGear,
+  drawLightbulb,
+  drawNetwork,
 ]
 
 // Per-shape "personality" for how it flies into formation
 const SHAPE_META: ShapeMeta[] = [
-  { entryDir: { x: 0, y: 0 }, tiltDeg: 0, scaleStart: 0.4 },       // braces — zooms in from center
-  { entryDir: { x: -1, y: 0 }, tiltDeg: 0, scaleStart: 1 },        // terminal — slides in from the left
-  { entryDir: { x: 0, y: -1 }, tiltDeg: 22, scaleStart: 0.8 },     // lock — drops in with a turn
-  { entryDir: { x: 0.9, y: -0.6 }, tiltDeg: -20, scaleStart: 1 },  // satellite — banks in from top-right
-  { entryDir: { x: 0, y: 1 }, tiltDeg: 14, scaleStart: 1 },        // rocket — launches up from below
-  { entryDir: { x: -1, y: 0.25 }, tiltDeg: 8, scaleStart: 0.9 },   // robot — walks in from the left
-  { entryDir: { x: 0, y: 0 }, tiltDeg: 220, scaleStart: 0.55 },    // globe — spins into place
-  { entryDir: { x: 0.9, y: 0.9 }, tiltDeg: -14, scaleStart: 0.85 }, // chip — slides in from bottom-right
+  { entryDir: { x: 0, y: -1 }, tiltDeg: 8, scaleStart: 0.35 },      // braces — from above
+  { entryDir: { x: -1, y: 0 }, tiltDeg: 0, scaleStart: 1 },         // terminal — from left
+  { entryDir: { x: 0, y: -1 }, tiltDeg: 22, scaleStart: 0.7 },      // lock — drops from above
+  { entryDir: { x: 0.9, y: -0.6 }, tiltDeg: -20, scaleStart: 1 },   // satellite — banks from top-right
+  { entryDir: { x: 0, y: 1 }, tiltDeg: 14, scaleStart: 1 },         // rocket — launches from below
+  { entryDir: { x: -1, y: 0.25 }, tiltDeg: 8, scaleStart: 0.9 },    // robot — from left
+  { entryDir: { x: 1, y: -0.5 }, tiltDeg: 220, scaleStart: 0.45 },  // globe — spins from right
+  { entryDir: { x: 0.9, y: 0.9 }, tiltDeg: -14, scaleStart: 0.85 }, // chip — from bottom-right
+  { entryDir: { x: 0.5, y: -1 }, tiltDeg: 6, scaleStart: 0.5 },     // africa — from upper-right
+  { entryDir: { x: -1, y: 0.3 }, tiltDeg: 15, scaleStart: 0.8 },    // gear — rolls from left
+  { entryDir: { x: -0.5, y: -1 }, tiltDeg: 5, scaleStart: 0.3 },    // lightbulb — from upper-left
+  { entryDir: { x: 0.9, y: 0.5 }, tiltDeg: -10, scaleStart: 0.8 },  // network — from bottom-right
 ]
 
 function generateShapePoints(
@@ -360,7 +512,7 @@ function generateShapePoints(
     ;[candidates[i], candidates[j]] = [candidates[j], candidates[i]]
   }
 
-  const effectiveW = rightHalf ? w / 2 : w
+  const effectiveW = rightHalf ? w * 0.6 : w
   const scale = (effectiveW * 1.0) / SW
   const shapeW = SW * scale
   const shapeH = SH * scale
@@ -398,25 +550,34 @@ export default function FlockBackground() {
     let shapeIndex = 0
     let transitionStart = performance.now()
 
-    // Computes where a particle should be, given how far through its
-    // (staggered) flight it is. remaining=1 -> fully at the entry pose,
-    // remaining=0 -> settled at its final silhouette position.
-    function transformPoint(final: Point, meta: ShapeMeta, remaining: number, eased: number): Point {
+    function transformPoint(final: Point, meta: ShapeMeta, remaining: number, eased: number): Point3D {
       const travel = Math.max(w, h) * 0.55
-      const angle = (meta.tiltDeg * Math.PI) / 180 * remaining
+
+      const rotY = (meta.tiltDeg * Math.PI) / 180 * remaining
       const dx0 = final.x - w / 2
       const dy0 = final.y - h / 2
-      const cosA = Math.cos(angle)
-      const sinA = Math.sin(angle)
-      const rx = dx0 * cosA - dy0 * sinA
-      const ry = dx0 * sinA + dy0 * cosA
+
+      const cosRY = Math.cos(rotY * 0.4)
+      const sinRY = Math.sin(rotY * 0.4)
+      const rx = dx0 * cosRY + dy0 * sinRY * 0.25
+      const ry = -dx0 * sinRY * 0.25 + dy0 * cosRY
+
       const scale = meta.scaleStart + (1 - meta.scaleStart) * eased
       const offX = meta.entryDir.x * travel * remaining
       const offY = meta.entryDir.y * travel * remaining
-      return { x: w / 2 + rx * scale + offX, y: h / 2 + ry * scale + offY }
+
+      const z = 0.15 + 0.85 * Math.min(1, eased * 1.25)
+      const perspective = 1 + (1 - z) * 0.35
+
+      return {
+        x: w / 2 + rx * scale * perspective + offX,
+        y: h / 2 + ry * scale * perspective + offY,
+        z,
+      }
     }
 
     let rightHalf = window.innerWidth >= 768
+    let isMobile = !rightHalf
 
     function applyShape(index: number, isSwitch: boolean) {
       if (w === 0 || h === 0) return
@@ -430,11 +591,14 @@ export default function FlockBackground() {
           return {
             x: start.x,
             y: start.y,
+            z: start.z,
             targetX: start.x,
             targetY: start.y,
+            targetZ: start.z,
             vx: 0,
             vy: 0,
-            size: rand(2.5, 5.0),
+            vz: 0,
+            size: rand(rightHalf ? 4 : 3, rightHalf ? 7.5 : 6),
             hue: p.h + rand(-6, 6),
             sat: p.s + rand(-6, 6),
             light: p.l + rand(-8, 8),
@@ -454,6 +618,7 @@ export default function FlockBackground() {
 
     function resize() {
       rightHalf = window.innerWidth >= 768
+      isMobile = !rightHalf
       const parent = canvas!.parentElement!
       const rect = parent.getBoundingClientRect()
       w = rect.width
@@ -516,24 +681,31 @@ export default function FlockBackground() {
           const eased = easeOutCubic(t)
           const remaining = 1 - eased
           const target = transformPoint(final, meta, remaining, eased)
-          // tiny idle shimmer once settled, so it never looks frozen
-          const idle = remaining < 0.02 ? Math.sin(now * 0.0014 + i * 0.21) * 1.5 : 0
+          const idle = remaining < 0.02 ? Math.sin(now * 0.0014 + i * 0.21) * 1.2 : 0
           p.targetX = target.x
           p.targetY = target.y + idle
+          p.targetZ = target.z
         }
+
+        const dz = p.targetZ - p.z
+        p.vz += dz * SPRING * 0.4
+        p.vz *= DAMPING
+        p.z += p.vz
 
         const dx = p.targetX - p.x
         const dy = p.targetY - p.y
         p.vx += dx * SPRING
         p.vy += dy * SPRING
 
-        const dxc = p.x - cx
-        const dyc = p.y - cy
-        const dc = Math.sqrt(dxc * dxc + dyc * dyc)
-        if (dc < FLEE_RADIUS && dc > 0.1) {
-          const strength = (1 - dc / FLEE_RADIUS) * FLEE_FORCE
-          p.vx += (dxc / dc) * strength
-          p.vy += (dyc / dc) * strength
+        if (!isMobile) {
+          const dxc = p.x - cx
+          const dyc = p.y - cy
+          const dc = Math.sqrt(dxc * dxc + dyc * dyc)
+          if (dc < FLEE_RADIUS && dc > 0.1) {
+            const strength = (1 - dc / FLEE_RADIUS) * FLEE_FORCE
+            p.vx += (dxc / dc) * strength
+            p.vy += (dyc / dc) * strength
+          }
         }
 
         p.vx *= DAMPING
@@ -545,13 +717,24 @@ export default function FlockBackground() {
       c.clearRect(0, 0, w, h)
 
       for (const p of particles) {
-        const twinkle = 0.6 + 0.4 * Math.sin(p.twinklePhase + frame * p.twinkleSpeed)
-        const alpha = 0.55 + 0.45 * twinkle
-        const color = `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha})`
+        const zDepth = 0.35 + 0.65 * p.z
+        const twinkle = 0.7 + 0.3 * Math.sin(p.twinklePhase + frame * p.twinkleSpeed)
+        const alpha = (0.5 + 0.5 * twinkle) * zDepth
+        const drawSize = p.size * zDepth
+
+        const highlight = Math.min(p.light + 20 * p.z, 92)
+        const shadow = Math.max(p.light - 10 * (1 - p.z), 35)
+        const grad = c.createRadialGradient(
+          p.x - drawSize * 0.25, p.y - drawSize * 0.25, 0,
+          p.x, p.y, drawSize
+        )
+        grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${highlight}%, ${alpha})`)
+        grad.addColorStop(0.6, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha * 0.85})`)
+        grad.addColorStop(1, `hsla(${p.hue}, ${p.sat - 5}%, ${shadow}%, ${alpha * 0.55})`)
 
         c.beginPath()
-        c.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-        c.fillStyle = color
+        c.arc(p.x, p.y, drawSize, 0, Math.PI * 2)
+        c.fillStyle = grad
         c.fill()
       }
     }

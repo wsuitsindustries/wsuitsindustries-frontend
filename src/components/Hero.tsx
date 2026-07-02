@@ -36,11 +36,7 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative h-dvh flex flex-col md:grid md:grid-cols-2 md:items-center max-md:items-start max-md:pt-32 overflow-hidden bg-white dark:bg-black snap-start">
-      <div className="absolute inset-0">
-        <FlockBackground />
-      </div>
-
+    <section className="relative h-dvh flex flex-col md:grid md:grid-cols-2 md:items-center max-md:items-start max-md:pt-32 bg-white dark:bg-black snap-start">
       <div className="relative z-10 max-md:mx-auto max-md:max-w-6xl max-md:px-4 sm:px-6 md:flex md:flex-col md:justify-center md:px-8 md:pl-12 lg:pl-16 xl:pl-24 md:pt-20 text-center md:text-left">
         <h1 className="text-[clamp(2.4rem,10vw,5rem)] md:text-[clamp(2.8rem,5vw,6rem)] font-bold tracking-tight text-gray-900 dark:text-white leading-[1.05] min-h-[1.2em]">
           <span>{typed.slice(0, accentIdx)}</span>
@@ -58,6 +54,10 @@ export default function Hero() {
             Our Vision
           </a>
         </div>
+      </div>
+
+      <div className="max-md:relative max-md:flex-1 max-md:w-full md:absolute md:inset-0">
+        <FlockBackground />
       </div>
 
       <div className="hidden md:block" />

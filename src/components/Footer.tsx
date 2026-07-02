@@ -18,7 +18,7 @@ export default function Footer() {
     <footer id="contact" className="relative min-h-dvh bg-gray-900 dark:bg-black text-white overflow-hidden snap-start">
       <FooterBackground />
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 sm:px-12 lg:px-16 flex flex-col min-h-dvh">
-        <div className="flex-1 flex flex-col justify-center lg:flex-row lg:justify-between gap-16 lg:gap-24">
+        <div className="flex-1 flex flex-col justify-center lg:flex-row lg:justify-between gap-16 lg:gap-24 pt-12 md:pt-16 lg:pt-24">
           <div className="max-w-md">
             <p className="text-base sm:text-lg text-gray-400 leading-relaxed">
               Engineering Africa's technological future. Building the
